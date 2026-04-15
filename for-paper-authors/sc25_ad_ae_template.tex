@@ -38,176 +38,231 @@ Appendix: Artifact Description/Artifact Evaluation
 
 \subsection{Paper's Main Contributions}
 
-\artexpl{
-Provide a list of all main contributions of the paper.
-}
+%\artexpl{
+In this paper, we propose xGR, a serving system that meets the low-latency constraints under high-concurrency recommendation scenarios. The main contributions are as follows:
+%}
 
-\artsampl{
+%\artsampl{
 \begin{description}
-\item[$C_1$] This is the 1st contribution.
-\item[$C_2$] This is the 2nd contribution.
-\item[$C_3$] This is the 3rd contribution.
+\item[$C_1$] We optimize the overall process spanning prefill, decode, and beam search phases. At the operator level, xAttention accelerates inference phases through KV cache management and staged attention computation. At the algorithm level, xBeam reduces search overhead with valid path constraint and early search termination.
+\item[$C_2$] We deconstruct the serving pipeline to facilitate system-level optimizations. xSchedule employs a three-tier hierarchy to enable pipeline overlap and task parallelism.
+\item[$C_3$] We develop a GR serving system xGR that enables fast recommendations under high-concurrency request scenarios. The experimental results show that xGR achieves higher throughput compared to the state-of-the-art baseline under strict P99 latency contraints.
 \end{description}
-}
+%}
 
 
 \subsection{Computational Artifacts}
 
-\artexpl{
-List the computational artifacts related to this paper along with their respective DOIs. Note that all computational artifacts may be archived under a single DOI.
-}
+%\artexpl{
+%List the computational artifacts related to this paper along with their respective DOIs. Note that all computational artifacts may be archived under a single DOI.
+%}
 
-\artsampl{
+%\artsampl{
 \begin{description}
-\item[$A_1$] https://doi.org/YY.YYYY/zenodo.0XXXXX
-\item[$A_2$] https://doi.org/ZZ.YYYY/zenodo.1XXXXX
-\item[$A_3$] https://doi.org/ZZ.YYYY/zenodo.2XXXXX
+\item[$A_1$] \textcolor{red}{https://doi.org/YY.YYYY/zenodo.0XXXXX}
+%\item[$A_2$] https://doi.org/ZZ.YYYY/zenodo.1XXXXX
+%\item[$A_3$] https://doi.org/ZZ.YYYY/zenodo.2XXXXX
 \end{description}
-}
+%}
 
-\artexpl{
-Provide a table with the relevant computational artifacts,
-highlight their relation to the contributions (from above) and
-point to the elements in the paper that are reproducible by each artifact, e.g.,
-which figures or tables were generated with the artifact.
-}
+%\artexpl{
+%Provide a table with the relevant computational artifacts,
+%highlight their relation to the contributions (from above) and
+%point to the elements in the paper that are reproducible by each artifact, e.g.,
+%which figures or tables were generated with the artifact.
+%}
 
-\artsampl{
+%\artsampl{
 \begin{center}
 \begin{tabular}{rll}
 \toprule
-Artifact ID  &  Contributions &  Related \\
-             &  Supported     &  Paper Elements \\
+Artifact ID    & Contributions &  Related \\
+              &  Supported     &  Paper Elements \\
 \midrule
-$A_1$   &  $C_1$ & Tables 1-2 \\
-        &        & Figure 3\\
+$A_1$   &   $C_1$ & Figure 16 \\
+%        &        & Figure 18\\
 \midrule
-$A_2$   &  $C_2$ & Tables 2-3 \\
-        &        & Figures 1-2\\
+$A_1$    &  $C_2$ & Figure 15 \\
+%        &        & Figures 17-18 \\
 \midrule
-.. \\
+$A_1$ & $C_3$ & Figures 13, 18\\
 \bottomrule
 \end{tabular}
 \end{center}
-}
+%}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Artifact Identification}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\artexpl{
-Provide the following six subsections for each computational artifact $A_i$.
-}
+%\artexpl{
+We integrate the computational artifact into a single DOI link $A_1$, where the corresponding contributions are shown in the table above. Artifact $A_1$ contains not only the source code of the xGR system but also scripts to reproduce the results. Note that the OneRec model and JD dataset are not readily available for open source. Instead, we will provide accounts for remote access during the AE stage.
+
+%Provide the following six subsections for each computational artifact $A_i$.
+%}
 
 \newartifact
 
 \artrel
+\begin{description}
 
-\artexpl{
-    Briefly explain the relationship between the artifact and contributions.
-}
+\item[$C_1$] We jointly verify the effectiveness of operator-level and algorithm-level optimizations. We analyze fine-grained kernel efficiency of xAttention compared to PagedAttention on Ascend NPU (Figure 17). We set the beam width to \{128, 256, 512\}, batch size to \{1, 4\}, and input length to \{1024, 2048\}. We focus on three key metrics including kernel latency, computational throughput and memory access overhead.
+
+\item[$C_2$]  We jointly verify the overall effectiveness including system-level optimizations. We analyze the memory usage of xGR compared to xLLM using the Qwen3-4B on Ascend NPU, where the RPS is set to 4. For Figure 15(a), the beam width increases from 128 to 512 with a fixed input length of 1k tokens. For Figure 15(b), the input length increases from 500 to 3,000 with a fixed beam width of 256.
+
+%We verify the effectiveness of system-level optimizations. We conduct an ablation study on Ascend NPU with OneRec 0.1B model and Amazon Review dataset (Figure 17). We establish the xGR baseline that only implements the core xAttention and xBeam components. We enable valid item filtering, kernel graph dispatch, and multi-stream execution separately to evaluate their individual impacts.
+
+\item[$C_3$] We verify the effectiveness of the GR serving system xGR. First, we conduct the end-to-end experiments on the Ascend NPU cluster with Amazon Review dataset (Figure 13). The Qwen3 model ranges from 0.6B to 4B parameters. The beam width is set to \{128, 256, 512\}. Second, we extend the evaluation to NVIDIA GPU cluster to demonstrate the portability of our system with the same configurations (Figure 18).
+
+\end{description}
+
+%\artexpl{
+%    Briefly explain the relationship between the artifact and contributions.
+%}
 
 \artexp
 
-\artexpl{
-Provide a higher level description of what outcome to expect from the corresponding experiments. Provide an explanation of how the results substantiate the main contributions.
-}
+\begin{description}
 
-\artsampl{
-Algorithm A should be faster than Algorithms C and B in all GPU scenarios.
-}
+\item[$C_1$] Regarding kernel latency and computational throughput, xAttention demonstrates superior performance compared to PagedAttention, particularly at large beam width. Regarding the memory access overhead, the pipeline spends most of PageAttention's time in a busy state. In contrast, xAttention maintains a significantly lower busy rate.
+
+\item[$C_2$] Regarding the memory efficiency, xGR maintains a stable memory footprint when beam width increases, whereas xLLM exhibits super-linear growth. With the beam width fixed, xGR maintains a remarkably low footprint even with high input length, significantly outperforming xLLM.
+
+\item[$C_3$] Regarding end-to-end performance, xGR consistently outperforms xLLM and vLLM across all cases on both Ascend NPU cluster and NVIDIA GPU cluster. Specifically, xGR sustains a significantly higher throughput under strict latency constraints (P99$\leq$200ms). As the RPS increases, the baselines experience a sharp rise in latency and quickly reach the constraint. In contrast, xGR maintains a relatively smooth latency increase even at high loads. 
+
+%In addition, xGR consistently delivers superior performance across the spectrum across different model scales.
+
+\end{description}
+
+%\artexpl{
+%Provide a higher level description of what outcome to expect from the corresponding experiments. Provide an explanation of how the results substantiate the main contributions.
+%}
+%
+%\artsampl{
+%Algorithm A should be faster than Algorithms C and B in all GPU scenarios.
+%}
 
 \arttime
 
-\artexpl{
-Estimate the time required to reproduce the artifact, providing separate estimates for the individual steps: Artifact Setup, Artifact Execution, and Artifact Analysis.
-}
+%\artexpl{
+%Estimate the time required to reproduce the artifact, providing separate estimates for the individual steps: Artifact Setup, Artifact Execution, and Artifact Analysis.
+%}
 
-\artsampl{
-The expected computational time of this artifact on GPU X is 20~min.
-}
+%\artsampl{
+\textcolor{red}{Taking  Ascend NPU cluster as an example, the expected reproduction time of artifact $A_1$ is about xx minutes. This includes xx minutes for $C_1$, xx minutes for $C_2$, and xx minutes for $C_3$.}
+%The expected computational time of this artifact on GPU X is 20~min.
+%}
 
 \artin
 
 \artinpart{Hardware}
 
-\artexpl{
-Specify the hardware requirements and dependencies (e.g., a specific interconnect or GPU type is required).
-}
+We evaluate artifact $A_1$ on an Ascend cluster and a GPU cluster. The Ascend cluster comprises 4 nodes, each with 16 Ascend NPUs (64GB) interconnected via HCCS. The GPU cluster comprises 8 NVIDIA H800 GPUs (80GB) interconnected via NVLink.
+
+%\artexpl{
+%Specify the hardware requirements and dependencies (e.g., a specific interconnect or GPU type is required).
+%}
 
 \artinpart{Software}
 
-\artexpl{
-Introduce all required software packages, including the computational artifact. For each software package, specify the version and provide the URL.
-}
+\textcolor{red}{We conduct experiments in the software environment configured with vLLM vxx and xLLM vxx. We use the vllm-ascend porting for the Ascend cluster. }
+
+%\artexpl{
+%Introduce all required software packages, including the computational artifact. For each software package, specify the version and provide the URL.
+%}
 
 \artinpart{Datasets / Inputs}
 
-\artexpl{
-Describe the datasets required by the artifact. Indicate whether the datasets can be generated, including instructions, or if they are available for download, providing the corresponding URL.
-}
+We use the publicly available dataset Amazon Review as input, and the models are multiple versions of the Qwen series, including Qwen3-0.6B, Qwen3-1.7B, and Qwen3-4B.
+
+%We use the public dataset Amazon Review as input. The corresponding URL for download is xxx.
+%\artexpl{
+%Describe the datasets required by the artifact. Indicate whether the datasets can be generated, including instructions, or if they are available for download, providing the corresponding URL.
+%}
 
 \artinpart{Installation and Deployment}
 
-\artexpl{
-Detail the requirements for compiling, deploying, and executing the experiments, including necessary compilers and their versions.
-}
+\textcolor{red}{To be supplemented ...}
+
+%\artexpl{
+%Detail the requirements for compiling, deploying, and executing the experiments, including necessary compilers and their versions.
+%}
 
 \artcomp
 
-\artexpl{
-Provide an abstract description of the experiment workflow of the artifact. It is important to identify the main tasks (processes) and how they depend on each other.
+There are three tasks included in the Artifact Execution: conducting experiments to evaluation the collaborative performance of attention computation and beam search (($T_1$), conducting experiments to evaluate the efficiency of scheduling optimization ($T_2$), conducting experiments to evaluate the end-to-end performance under strict P99 latency contraints ($T_3$). Each task involves actual program execution and result analysis. The execution scripts automatically call the plotting code in the /plot directory and saves the corresponding figures in the current directory.
 
-A workflow may consist of three tasks: $T_1, T_2$, and $T_3$. The task $T_1$ may generate a specific dataset. This dataset is then used as input by a computational task $T_2$, and the output of $T_2$ is processed by another task $T_3$, which produces the final results (e.g., plots, tables, etc.). State the individual tasks $T_i$ and provide their dependencies, e.g., $T_1 \rightarrow T_2 \rightarrow T_3$.
+\textcolor{red}{In Task $T_1$, to be supplemented ...}
 
-Provide details on the experimental parameters. How and why were parameters set to a specific value (if relevant for the reproduction of an artifact), e.g., size of dataset, number of data points, input sizes, etc. Additionally, include details on statistical parameters, like the number of repetitions.
-}
+\textcolor{red}{In Task $T_2$, to be supplemented ...}
+
+\textcolor{red}{In Task $T_3$, to be supplemented ...}
+
+In all, the execution flow of the artifact is: $T_1 \rightarrow T_2 \rightarrow T_3$.
+
+%\artexpl{
+%Provide an abstract description of the experiment workflow of the artifact. It is important to identify the main tasks (processes) and how they depend on each other.
+%
+%A workflow may consist of three tasks: $T_1, T_2$, and $T_3$. The task $T_1$ may generate a specific dataset. This dataset is then used as input by a computational task $T_2$, and the output of $T_2$ is processed by another task $T_3$, which produces the final results (e.g., plots, tables, etc.). State the individual tasks $T_i$ and provide their dependencies, e.g., $T_1 \rightarrow T_2 \rightarrow T_3$.
+%
+%Provide details on the experimental parameters. How and why were parameters set to a specific value (if relevant for the reproduction of an artifact), e.g., size of dataset, number of data points, input sizes, etc. Additionally, include details on statistical parameters, like the number of repetitions.
+%}
 
 \artout
 
 \newartifact
 
-\artexpl{
-Provide the same type of information as done for Computational Artifact $A_1$.
-}
+\begin{description}
+
+\item[$T_1$] For the kernel efficiency, xAttention demonstrates superior performance regarding latency, throughput, and memory access overhead. The results indicates that xAttention effectively saturates the compute units, whereas PagedAttention suffers from idle stalls. In addition, xAttention successfully transforms the workload from memory-bound to compute-bound and maximizes hardware utilization.
+
+\item[$T_2$] For the memory efficiency, xGR maintains a stable memory footprint, significantly lower than that of xLLM. The excessive memory consumption in xLLM stems from the additional block copying inherent in PagedAttention. xGR addresses this through separated KV cache management, maintaining a single physical copy of the shared prefix and just enough space to store the decoded tokens.
+
+\item[$T_3$] For the end-to-end performance, xGR consistently outperforms xLLM and vLLM across all cases. The results demonstrate the efficacy of staged attention computation and KV cache separation. In addition, xGR leverages the high accelerator parallelism for both beam sorting and filtering, coupled with shared prefix management. By avoiding the redundant loading of shared prompt contexts, xGR supports high concurrency robustly, whereas the baselines frequently trigger preemption under similar conditions. 
+
+\end{description}
+
+%\artexpl{
+%Provide the same type of information as done for Computational Artifact $A_1$.
+%}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  AE Appendix
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
-\appendixAE
-
-\arteval{1}
-\artin
-
-\artexpl{
-Provide instructions for installing and compiling libraries and code.
-Offer guidelines on deploying the code to resources.
-}
-
-\artcomp
-
-\artexpl{
-Describe the experiment workflow.
-If encapsulated within a workflow description or equivalent (such as a makefile or script), clearly outline the primary tasks and their interdependencies. Detail the main steps in the workflow. Merely instructing to “Run script.sh” is inadequate.
-}
-
-\artout
-
-\artexpl{
-\begin{itemize}
-    \item Provide a description of the expected results and a methodology for evaluating these results.
-    \item Explain how the expected results from the experiment workflow correlate with the contributions stated in the article.
-    \item For example, if the article presents results in a figure, the artifact evaluation should also produce a similar figure, depicting the same generalizable outcome. Authors must focus on these aspects to reduce the time required for others to understand and verify an artifact.
-\end{itemize}
-}
-
-
-\arteval{2}
-\artin
-\artcomp
-\artout
+%\newpage
+%\appendixAE
+%
+%\arteval{1}
+%\artin
+%
+%\artexpl{
+%Provide instructions for installing and compiling libraries and code.
+%Offer guidelines on deploying the code to resources.
+%}
+%
+%\artcomp
+%
+%\artexpl{
+%Describe the experiment workflow.
+%If encapsulated within a workflow description or equivalent (such as a makefile or script), clearly outline the primary tasks and their interdependencies. Detail the main steps in the workflow. Merely instructing to “Run script.sh” is inadequate.
+%}
+%
+%\artout
+%
+%\artexpl{
+%\begin{itemize}
+%    \item Provide a description of the expected results and a methodology for evaluating these results.
+%    \item Explain how the expected results from the experiment workflow correlate with the contributions stated in the article.
+%    \item For example, if the article presents results in a figure, the artifact evaluation should also produce a similar figure, depicting the same generalizable outcome. Authors must focus on these aspects to reduce the time required for others to understand and verify an artifact.
+%\end{itemize}
+%}
+%
+%
+%\arteval{2}
+%\artin
+%\artcomp
+%\artout
 
 \end{document}
