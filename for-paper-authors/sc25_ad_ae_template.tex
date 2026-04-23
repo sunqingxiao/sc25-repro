@@ -107,7 +107,7 @@ We integrate the computational artifact into a single DOI link $A_1$, where the 
 \artrel
 \begin{description}
 
-\item[$C_1$] We jointly verify the effectiveness of operator-level and algorithm-level optimizations. We analyze fine-grained kernel efficiency of xAttention compared to PagedAttention on Ascend NPU (Figure 17). We set the beam width to \{128, 256, 512\}, batch size to \{1, 4\}, and input length to \{1024, 2048\}. We focus on three key metrics including kernel latency, computational throughput and memory access overhead.
+\item[$C_1$] We jointly verify the effectiveness of operator-level and algorithm-level optimizations. We analyze fine-grained kernel efficiency of xAttention compared to PagedAttention on Ascend NPU (Figure 16). We set the beam width to \{128, 256, 512\}, batch size to \{1, 4\}, and input length to \{1024, 2048\}. We focus on three key metrics including kernel latency, computational throughput and memory access overhead.
 
 \item[$C_2$]  We jointly verify the overall effectiveness including system-level optimizations. We analyze the memory usage of xGR compared to xLLM using the Qwen3-4B on Ascend NPU, where the RPS is set to 4. For Figure 15(a), the beam width increases from 128 to 512 with a fixed input length of 1k tokens. For Figure 15(b), the input length increases from 500 to 3,000 with a fixed beam width of 256.
 
@@ -150,7 +150,7 @@ We integrate the computational artifact into a single DOI link $A_1$, where the 
 %}
 
 %\artsampl{
-\textcolor{red}{Taking  Ascend NPU cluster as an example, the expected reproduction time of artifact $A_1$ is about xx minutes. This includes xx minutes for $C_1$, xx minutes for $C_2$, and xx minutes for $C_3$.}
+\textcolor{red}{Taking  Ascend NPU cluster as an example, the expected reproduction time of artifact $A_1$ is about 2030 minutes. This includes 10 minutes for $C_1$, 20 minutes for $C_2$, and 2000 minutes for $C_3$.}
 %The expected computational time of this artifact on GPU X is 20~min.
 %}
 
@@ -166,7 +166,7 @@ We evaluate artifact $A_1$ on an Ascend cluster and a GPU cluster. The Ascend cl
 
 \artinpart{Software}
 
-\textcolor{red}{We conduct experiments in the software environment configured with vLLM vxx and xLLM vxx. We use the vllm-ascend porting for the Ascend cluster. }
+\textcolor{red}{We conduct experiments in the software environment configured with vLLM v0.18.0 and xLLM v0.8.0. We use the vllm-ascend porting for the Ascend cluster. }
 
 %\artexpl{
 %Introduce all required software packages, including the computational artifact. For each software package, specify the version and provide the URL.
@@ -183,7 +183,7 @@ We use the publicly available dataset Amazon Review as input, and the models are
 
 \artinpart{Installation and Deployment}
 
-\textcolor{red}{To be supplemented ...}
+\textcolor{red}{For ease of installation, we provide an \texttt{install.sh} script to download the required container images and model weights. It downloads four images for vLLM and xLLM on NPU and GPU, respectively, as well as the Qwen model weights in three sizes.}
 
 %\artexpl{
 %Detail the requirements for compiling, deploying, and executing the experiments, including necessary compilers and their versions.
@@ -191,13 +191,16 @@ We use the publicly available dataset Amazon Review as input, and the models are
 
 \artcomp
 
-There are three tasks included in the Artifact Execution: conducting experiments to evaluation the collaborative performance of attention computation and beam search (($T_1$), conducting experiments to evaluate the efficiency of scheduling optimization ($T_2$), conducting experiments to evaluate the end-to-end performance under strict P99 latency contraints ($T_3$). Each task involves actual program execution and result analysis. The execution scripts automatically call the plotting code in the /plot directory and saves the corresponding figures in the current directory.
+There are three tasks included in the Artifact Execution: conducting experiments to evaluation the collaborative performance of attention computation and beam search ($T_1$), \textcolor{red}{conducting experiments to evaluate the efficiency of scheduling optimization ($T_2$)}, conducting experiments to evaluate the end-to-end performance under strict P99 latency contraints ($T_3$). Each task involves actual program execution and result analysis. The execution scripts automatically call the plotting code in the /plot directory and saves the corresponding figures in the current directory.
 
-\textcolor{red}{In Task $T_1$, to be supplemented ...}
+\textcolor{red}{In Task $T_1$, users should create the xLLM-NPU container and run \texttt{fig16/run\_fig16\_pipeline.sh} to reproduce the corresponding results.}
 
-\textcolor{red}{In Task $T_2$, to be supplemented ...}
+\textcolor{red}{In Task $T_2$, users should create the xLLM-NPU container and run \texttt{fig15/run\_fig15\_pipeline.sh} to reproduce the corresponding results.}
 
-\textcolor{red}{In Task $T_3$, to be supplemented ...}
+\textcolor{red}{In Task $T_3$ on NPU, users should create the vLLM-Ascend and xLLM-NPU containers and run \path{fig13/run_fig13_pipeline.sh} to reproduce the corresponding results.}
+
+\textcolor{red}{In Task $T_3$ on GPU, users should create the vLLM-GPU and xLLM-GPU containers and run \path{fig18/run_fig18_pipeline.sh} to reproduce the corresponding results.}
+
 
 In all, the execution flow of the artifact is: $T_1 \rightarrow T_2 \rightarrow T_3$.
 
