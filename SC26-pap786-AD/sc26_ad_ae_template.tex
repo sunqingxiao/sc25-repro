@@ -43,7 +43,7 @@ In this paper, we propose xGR, a serving system that meets the low-latency const
 %\artsampl{
 \begin{description}
 \item[$C_1$] We optimize the overall process spanning prefill, decode, and beam search phases. At the operator level, xAttention accelerates inference through KV cache management and staged attention computation. At the algorithm level, xBeam reduces overhead with valid path constraint and early search termination.
-\item[$C_2$] We deconstruct the serving pipeline to facilitate system-level optimizations. xSchedule employs a three-tier hierarchy to enable host-device pipeline overlap and multi-stream parallelism.
+\item[$C_2$] We deconstruct the serving pipeline to facilitate system-level optimizations. xSchedule employs a three-tier hierarchy to enable pipeline overlap and task parallelism. It combines xAttention and xBeam to orchestrate task placement across and within requests to improve memory efficiency.
 \item[$C_3$] We develop a GR serving system xGR that enables fast recommendations under high-concurrency scenarios. The experimental results show that xGR achieves higher throughput compared to the state-of-the-art baseline under strict P99 latency contraints.
 \end{description}
 %}
@@ -95,7 +95,7 @@ $A_1$ & $C_3$ & Figures 13, 18\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %\artexpl{
-We integrate the computational artifact into a single DOI link $A_1$, where the corresponding contributions are shown in the table above. Artifact $A_1$ contains not only the source code of the xGR system but also scripts to reproduce the results. Note that the OneRec model and JD dataset are not readily available for open source. Instead, we will provide temporal accounts for remote access during the AE stage.
+We integrate the computational artifact into a single Github link $A_1$, where the corresponding contributions are shown in the table above. Artifact $A_1$ contains not only the source code of the xGR system but also scripts to reproduce the results. Note that the OneRec model and JD dataset are not readily available for open source. Instead, we will provide temporal accounts for remote access during the AE stage.
 
 %Provide the following six subsections for each computational artifact $A_i$.
 %}
@@ -152,7 +152,7 @@ We integrate the computational artifact into a single DOI link $A_1$, where the 
 %}
 
 %\artsampl{
-Taking  Ascend NPU cluster as an example, the expected reproduction time of artifact $A_1$ is about 2,030 minutes. This includes 10 minutes for $C_1$, 20 minutes for $C_2$, and 2,000 minutes for $C_3$. \textcolor{red}{To meet the 8-hour review budget, we also introduce the \textit{quick mode} with reduced settings, retaining only two common configurations: Qwen3-0.6B with beam width of 512 and Qwen3-4B with beam width of 128. This reduces the reproduction time of $C_3$ to approximately 420 minutes.}
+Taking  Ascend NPU cluster as an example, the expected reproduction time of artifact $A_1$ is about 2,030 minutes. This includes 10 minutes for $C_1$, 20 minutes for $C_2$, and 2,000 minutes for $C_3$. To meet the 8-hour review budget, we also introduce the \textit{quick mode} with reduced settings, retaining only two common configurations: Qwen3-0.6B with beam width of 512 and Qwen3-4B with beam width of 128. This reduces the reproduction time of $C_3$ to approximately 420 minutes.
 %The expected computational time of this artifact on GPU X is 20~min.
 %}
 
